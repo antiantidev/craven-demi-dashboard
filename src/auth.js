@@ -1,18 +1,11 @@
-import DiscordProvider from "next-auth/providers/discord";
+import NextAuth from "next-auth";
+import Discord from "next-auth/providers/discord";
+import authConfig from "@/auth.config";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import client from "@/lib/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: MongoDBAdapter(client),
-  providers: [
-    DiscordProvider({
-      authorization: {
-        params: {
-          scope: "identify guilds email",
-        },
-      },
-    }),
-  ],
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
@@ -29,4 +22,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
+  session: { strategy: "jwt" },
+  ...authConfig,
 });

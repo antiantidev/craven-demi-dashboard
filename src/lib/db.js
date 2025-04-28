@@ -14,17 +14,14 @@ const options = {
 };
 
 let client;
-let clientPromise;
 
 if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+  if (!global._mongoClient) {
+    global._mongoClient = new MongoClient(uri, options);
   }
-  clientPromise = global._mongoClientPromise;
+  client = global._mongoClient;
 } else {
   client = new MongoClient(uri, options);
-  clientPromise = client.connect();
 }
 
-export default clientPromise;
+export default client;
